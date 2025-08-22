@@ -1,14 +1,11 @@
-from functions.get_file_content import *
+from functions.write_file import *
 
-print("Result for main.py:")
-print(get_file_content("calculator", "main.py"))
+print("Result for lorem.txt:")
+print(write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum"))
 print("-----------------------------")
-print("Result for pkg/calculator.py:")
-print(get_file_content("calculator", "pkg/calculator.py"))
+print("Result for pkg/morelorem.txt:")
+print(write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"))
 print("-----------------------------")
-print("Result for '/bin/cat:")
-print(get_file_content("calculator", "/bin/cat"))
-print("-----------------------------")
-print("Result for invalid file:")
-print(get_file_content("calculator", "pkg/does_not_exist.py"))
+print("Result for /tmp/temp.txt:")
+print(write_file("calculator", "/tmp/temp.txt", "this should not be allowed"))
 print("-----------------------------")
