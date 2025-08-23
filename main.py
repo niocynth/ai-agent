@@ -44,22 +44,34 @@ available_functions = types.Tool(
 )
 
 def main():
-    verbose = "--verbose" in sys.argv    
-    response = client.models.generate_content(
-    model='gemini-2.0-flash-001', contents=messages,
-    config=types.GenerateContentConfig(
-        tools=[available_functions], system_instruction=system_prompt),
-    )
-    if response.function_calls:
-        for function_call_part in response.function_calls:
-            function_response = call_function(function_call_part, verbose)
-            if not function_response.parts[0].function_response.response:
-                raise Exception("Function response missing")
-            if verbose:
-                print(f"-> {function_response.parts[0].function_response.response}")
-            print(function_response)
-    else:
-        print(response.text)
+    verbose = "--verbose" in sys.argv   
+
+    try:
+        for i in range(20):
+            response = client.models.generate_content(
+            model='gemini-2.0-flash-001', contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions], system_instruction=system_prompt),
+            )  
+
+            for candidate in response.candidates:
+                messages.append(candidate.content)
+
+        
+            if response.function_calls:
+                for function_call_part in response.function_calls:
+                    function_response = call_function(function_call_part, verbose)
+                    if not function_response.parts[0].function_response.response:
+                        raise Exception("Function response missing")
+                    if verbose:
+                        print(f"-> {function_response.parts[0].function_response.response}")
+                    messages.append(function_response)
+            else:
+                print(response.text)
+                break
+            continue
+    except Exception as e:
+        return f"Error: {str(e)}"
 
     if verbose:
         print(f"User prompt: {user_prompt}")
